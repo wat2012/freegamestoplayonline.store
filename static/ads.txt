@@ -1,0 +1,11 @@
+# ads.txt file for vipgame.my
+# This file authorizes digital advertising platforms to serve ads on this domain
+
+# Google AdSense
+google.com, pub-5646035224187434, DIRECT, f08c47fec0942fa0
+
+# Google Ad Manager (optional, if using)
+#google.com, pub-XXXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+
+# Replace pub-XXXXXXXXXXXXXXXXX with your actual Google AdSense Publisher ID
+# You can find your Publisher ID in your Google AdSense account under Account > Account information

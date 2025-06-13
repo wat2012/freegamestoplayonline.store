@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        <!-- SEO基础优化 - 英文优先 -->
+        <meta name="description" content="FreeWebGames Store - Your Next Game Is Just One Click Away. Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser!" />
+        <meta name="keywords" content="free web games,free online games,browser games,HTML5 games,flash games,action games,puzzle games,strategy games,adventure games,casual games,arcade games,multiplayer games,single player games,mobile games,desktop games" />
+        <meta name="author" content="FreeWebGames Store" />
+        <meta name="robots" content="index, follow" />
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="FreeWebGames Store" />
+        <meta property="og:title" content="FreeWebGames Store - Your Next Game Is Just One Click Away" />
+        <meta property="og:description" content="Discover thousands of free online games. Play action, puzzle, strategy, adventure and casual games instantly in your browser. Your next game is just one click away!" />
+        <meta property="og:url" content="https://freegamestoplayonline.store/" />
+        <meta property="og:locale" content="en_US" />
+        
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@freewebgames" />
+        <meta name="twitter:title" content="FreeWebGames Store - Your Next Game Is Just One Click Away" />
+        <meta name="twitter:description" content="Discover thousands of free online games. Play instantly in your browser!" />
+        
+        <!-- 预连接优化 -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        
+        <!-- 结构化数据 -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "FreeWebGames Store",
+            "alternateName": "Free Web Games Store",
+            "url": "https://freegamestoplayonline.store",
+            "description": "Your Next Game Is Just One Click Away. Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games.",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://freegamestoplayonline.store/?search={search_term_string}",
+                "query-input": "required name=search_term_string"
+            },
+            "inLanguage": "en",
+            "publisher": {
+                "@type": "Organization",
+                "name": "FreeWebGames Store",
+                "url": "https://freegamestoplayonline.store"
+            },
+            "category": "Entertainment",
+            "audience": {
+                "@type": "Audience",
+                "audienceType": "Gamers"
+            }
+        }
+        </script>
+        
+        <title>FreeWebGames Store - Your Next Game Is Just One Click Away</title>
+        
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-LHVJ2CZ62V"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-LHVJ2CZ62V');
+        </script>
+        
+        %sveltekit.head%
+    </head>
+    <body data-sveltekit-preload-data="hover">
+        <div style="display: contents">%sveltekit.body%</div>
+    </body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "name": "freegamestoplayonline.store",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite dev",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-vercel": "^3.0.0",
+    "@sveltejs/kit": "^1.20.4",
+    "svelte": "^4.0.5",
+    "svelte-check": "^3.4.3",
+    "vite": "^4.4.2"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "@supabase/auth-ui-svelte": "^0.2.7",
+    "@supabase/auth-ui-shared": "^0.1.8"
+  },
+  "type": "module",
+  "description": "FreeWebGames Store - Your Next Game Is Just One Click Away. Free online games platform with thousands of browser games.",
+  "keywords": [
+    "free games",
+    "online games",
+    "browser games",
+    "HTML5 games",
+    "web games",
+    "casual games"
+  ],
+  "homepage": "https://freegamestoplayonline.store",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/freegamestoplayonline/store"
+  }
+}
