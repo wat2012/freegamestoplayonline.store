@@ -109,7 +109,14 @@
 		if (!categoryId) return t('latestGames', lang);
 		return getCategoryName(categoryId, lang);
 	}
-
+	
+	// 添加缺失的categoryNavItems定义
+	$: categoryNavItems = Object.keys(categoryTranslations).map(categoryId => ({
+		id: categoryId,
+		name: getCategoryName(categoryId, lang),
+		href: `/?category=${categoryId}`
+	}));
+	
 	// SEO优化：生成页面标题和描述 - 英文优先
 	$: pageTitle = selectedCategory 
 		? `${getCategoryDisplayName(selectedCategory)} - FreeWebGames Store` 
@@ -118,6 +125,15 @@
 	$: pageDescription = selectedCategory
 		? `Browse ${getCategoryDisplayName(selectedCategory)} games - ${filteredGames.length} free games for the best gaming experience`
 		: 'Your Next Game Is Just One Click Away. Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games.';
+
+	// 增强SEO信息 - 首页
+	$: metaKeywords = selectedCategory 
+		? `${getCategoryDisplayName(selectedCategory)},${getCategoryDisplayName(selectedCategory)} games,free ${getCategoryDisplayName(selectedCategory).toLowerCase()} games,online ${getCategoryDisplayName(selectedCategory).toLowerCase()} games,browser games,HTML5 games`
+		: 'free web games,online games,browser games,HTML5 games,flash games,action games,puzzle games,strategy games,adventure games,casual games';
+		
+	$: categoryDescription = selectedCategory
+		? `Play the best free ${getCategoryDisplayName(selectedCategory).toLowerCase()} games online at FreeWebGames Store. No downloads, no registration required - just click and play ${filteredGames.length} amazing ${getCategoryDisplayName(selectedCategory).toLowerCase()} games directly in your browser.`
+		: 'Your Next Game Is Just One Click Away. Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games without registration or download.';
 
 	// 生成结构化数据
 	$: structuredData = {
@@ -147,22 +163,58 @@
 <svelte:head>
 	<title>{pageTitle}</title>
 	<meta name="description" content={pageDescription} />
-	<meta name="keywords" content={selectedCategory ? `${getCategoryDisplayName(selectedCategory)},${getCategoryDisplayName(selectedCategory)} games,online ${getCategoryDisplayName(selectedCategory)}` : 'VIP games,online games,free games,premium games'} />
+	<meta name="keywords" content={metaKeywords} />
 	
-	<!-- Open Graph -->
+	<!-- Open Graph - 增强社交媒体分享 -->
 	<meta property="og:title" content={pageTitle} />
 	<meta property="og:description" content={pageDescription} />
 	<meta property="og:url" content={selectedCategory ? `https://freegamestoplayonline.store/?category=${selectedCategory}` : 'https://freegamestoplayonline.store'} />
 	<meta property="og:image" content="https://freegamestoplayonline.store/og-image.jpg" />
+	<meta property="og:type" content={selectedCategory ? "website" : "website"} />
+	<meta property="og:site_name" content="FreeWebGames Store" />
 	
-	<!-- Twitter Card -->
+	<!-- Twitter Card - 优化推特分享 -->
+	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={pageTitle} />
 	<meta name="twitter:description" content={pageDescription} />
 	<meta name="twitter:image" content="https://freegamestoplayonline.store/og-image.jpg" />
 	
-	<!-- 结构化数据 -->
-	{#if filteredGames.length > 0}
+	<!-- 结构化数据 - 不仅保留ItemList也增加WebPage信息 -->
+	{#if selectedCategory && filteredGames.length > 0}
 		<script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+		<script type="application/ld+json">
+		{JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "CollectionPage",
+			"name": `${getCategoryDisplayName(selectedCategory)} Games - FreeWebGames Store`,
+			"description": categoryDescription,
+			"url": `https://freegamestoplayonline.store/?category=${selectedCategory}`,
+			"mainEntity": {
+				"@type": "ItemList",
+				"numberOfItems": filteredGames.length,
+				"itemListElement": filteredGames.slice(0, 10).map((game, index) => ({
+					"@type": "ListItem",
+					"position": index + 1,
+					"url": `https://freegamestoplayonline.store/games/${game.id}`,
+					"name": getLocalizedField(game, 'title', lang)
+				}))
+			}
+		})}
+		</script>
+	{:else}
+		<script type="application/ld+json">
+		{JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "WebPage",
+			"name": "FreeWebGames Store - Your Next Game Is Just One Click Away",
+			"description": "Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser!",
+			"url": "https://freegamestoplayonline.store",
+			"speakable": {
+				"@type": "SpeakableSpecification",
+				"cssSelector": [".page-header h1", ".page-header p"]
+			}
+		})}
+		</script>
 	{/if}
 	
 	<!-- Canonical URL -->
@@ -208,6 +260,15 @@
 		{/if}
 	</header>
 
+	<!-- 添加简单面包屑导航 -->
+	<div class="breadcrumb-navigation">
+		<a href="/" class="breadcrumb-item">FreeWebGames Store</a>
+		{#if selectedCategory}
+			<span class="breadcrumb-separator">›</span>
+			<span class="breadcrumb-item current">{getCategoryDisplayName(selectedCategory)} {lang === 'en' ? 'Games' : '游戏'}</span>
+		{/if}
+	</div>
+
 	<!-- 将content-with-sidebar改为main-content-full -->
 	<div class="main-content-full">
 		<!-- 主要内容区 -->
@@ -218,6 +279,17 @@
 					<span class="games-count">
 						{t('totalGames', lang, { count: filteredGames.length })}
 					</span>
+				</div>
+				
+				<!-- 添加类别介绍 - SEO优化 -->
+				<div class="category-description">
+					<p>
+						{#if lang === 'en'}
+							Discover our collection of <strong>{filteredGames.length} free {getCategoryDisplayName(selectedCategory).toLowerCase()} games</strong> at <strong>FreeWebGames Store</strong>. All games are playable directly in your browser without download or registration. Enjoy the best {getCategoryDisplayName(selectedCategory).toLowerCase()} gaming experience online!
+						{:else}
+						 在<strong>FreeWebGames Store</strong>上探索我们的<strong>{filteredGames.length}款免费{getCategoryDisplayName(selectedCategory)}游戏</strong>。所有游戏都可以直接在浏览器中玩，无需下载或注册。享受最佳的在线{getCategoryDisplayName(selectedCategory)}游戏体验！
+						{/if}
+					</p>
 				</div>
 				
 				{#if loading}
@@ -249,13 +321,27 @@
 				{/if}
 			</section>
 		{:else}
-			<!-- Home content sections with enhanced styling -->
+			<!-- Home content sections -->
 			{#if loading}
 				<div class="loading">
 					<div class="loading-spinner"></div>
 					<p>{t('loading', lang)}</p>
 				</div>
 			{:else}
+				<!-- 首页SEO介绍部分 -->
+				<section class="home-intro">
+					<div class="intro-content">
+						<h2>{lang === 'en' ? 'Free Online Games Collection' : '免费在线游戏合集'}</h2>
+						<p>
+							{#if lang === 'en'}
+							 Welcome to <strong>FreeWebGames Store</strong>, your destination for the best free online games! We offer a diverse collection of games across multiple categories including action, puzzle, strategy, adventure, and more. All our games are playable directly in your browser with no downloads or registration required.
+							{:else}
+							 欢迎来到<strong>FreeWebGames Store</strong>，这里是您畅玩最佳免费在线游戏的目的地！我们提供多种类别的游戏，包括动作、益智、策略、冒险等。所有游戏都可以直接在浏览器中玩，无需下载或注册。
+							{/if}
+						</p>
+					</div>
+				</section>
+
 				<!-- 最新游戏板块 -->
 				<section class="home-section latest-games-section">
 					<div class="section-header">
@@ -300,6 +386,28 @@
 							<p>{t('noGames', lang)}</p>
 						</div>
 					{/if}
+				</section>
+
+				<!-- 首页底部SEO部分 -->
+				<section class="home-footer-seo">
+					<h2>{lang === 'en' ? 'Play Free Online Games at FreeWebGames Store' : '在FreeWebGames Store上畅玩免费在线游戏'}</h2>
+					<p>
+						{#if lang === 'en'}
+						 At FreeWebGames Store, we're dedicated to bringing you the best free online gaming experience. Our growing collection features games for all preferences, from fast-paced action to mind-bending puzzles, strategic challenges, and relaxing casual games. Explore our categories to find your next favorite game, all free to play in your browser with no registration required.
+						{:else}
+						 在FreeWebGames Store，我们致力于为您带来最佳的免费在线游戏体验。我们不断增长的游戏合集包含适合各种喜好的游戏，从节奏快的动作游戏到烧脑的益智游戏，从战略挑战到轻松休闲游戏。浏览我们的游戏分类，找到您的下一个最爱，所有游戏都可以在浏览器中免费玩，无需注册。
+						{/if}
+					</p>
+					<div class="category-links">
+						<h3>{lang === 'en' ? 'Popular Game Categories' : '热门游戏分类'}</h3>
+						<div class="popular-categories">
+							{#each categoryNavItems.slice(0, 6) as category}
+								<a href={category.href} class="category-link">
+									{category.name} {lang === 'en' ? 'Games' : '游戏'}
+								</a>
+							{/each}
+						</div>
+					</div>
 				</section>
 			{/if}
 		{/if}
@@ -823,5 +931,138 @@
 		.games-grid {
 			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 		}
+	}
+	
+	/* 面包屑导航样式 */
+	.breadcrumb-navigation {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		padding: 0.5rem 0.8rem;
+		margin-bottom: 1rem;
+		color: #6c757d;
+		font-size: 0.85rem;
+		background: rgba(255, 255, 255, 0.5);
+		border-radius: 6px;
+	}
+	
+	.breadcrumb-item {
+		color: #6c757d;
+		text-decoration: none;
+	}
+	
+	.breadcrumb-item:hover {
+		color: #007bff;
+		text-decoration: underline;
+	}
+	
+	.breadcrumb-item.current {
+		color: #495057;
+		font-weight: 600;
+	}
+	
+	.breadcrumb-separator {
+		margin: 0 0.5rem;
+		color: #adb5bd;
+	}
+	
+	/* 分类介绍样式 */
+	.category-description {
+		background: rgba(255, 255, 255, 0.8);
+		padding: 1rem;
+		border-radius: 6px;
+		margin-bottom: 1.5rem;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	}
+	
+	.category-description p {
+		margin: 0;
+		color: #495057;
+		line-height: 1.5;
+		font-size: 0.95rem;
+	}
+	
+	/* 首页介绍样式 */
+	.home-intro {
+		background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(245,245,255,0.95));
+		padding: 1.5rem;
+		border-radius: 8px;
+		margin-bottom: 1.5rem;
+		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+	}
+	
+	.home-intro h2 {
+		margin: 0 0 1rem 0;
+		color: #343a40;
+		font-size: 1.4rem;
+		position: relative;
+		display: inline-block;
+	}
+	
+	.home-intro h2::after {
+		content: '';
+		position: absolute;
+		bottom: -3px;
+		left: 0;
+		width: 40px;
+		height: 2px;
+		background: linear-gradient(90deg, #6a11cb, #2575fc);
+		border-radius: 2px;
+	}
+	
+	.home-intro p {
+		margin: 0;
+		color: #495057;
+		line-height: 1.6;
+	}
+	
+	/* 底部SEO部分样式 */
+	.home-footer-seo {
+		background: rgba(255, 255, 255, 0.7);
+		padding: 1.5rem;
+		border-radius: 8px;
+		margin-top: 2rem;
+		box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+	}
+	
+	.home-footer-seo h2 {
+		margin: 0 0 1rem 0;
+		color: #343a40;
+		font-size: 1.2rem;
+	}
+	
+	.home-footer-seo p {
+		margin: 0 0 1.2rem 0;
+		color: #495057;
+		line-height: 1.6;
+		font-size: 0.95rem;
+	}
+	
+	.category-links h3 {
+		margin: 1rem 0 0.8rem 0;
+		font-size: 1.1rem;
+		color: #495057;
+	}
+	
+	.popular-categories {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	
+	.category-link {
+		background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), rgba(37, 117, 252, 0.1));
+		color: #6a11cb;
+		padding: 0.4rem 0.8rem;
+		border-radius: 20px;
+		text-decoration: none;
+		font-size: 0.85rem;
+		transition: all 0.3s ease;
+	}
+	
+	.category-link:hover {
+		background: linear-gradient(135deg, rgba(106, 17, 203, 0.2), rgba(37, 117, 252, 0.2));
+		transform: translateY(-2px);
+		box-shadow: 0 3px 8px rgba(106, 17, 203, 0.15);
 	}
 </style>

@@ -22,22 +22,29 @@
 		name: getCategoryName(categoryId, lang),
 		href: `/?category=${categoryId}`
 	}));
+
+	// 添加全局路径追踪
+	$: currentPath = $page.url.pathname;
+	$: currentCategory = $page.url.searchParams.get('category') || '';
+	
+	// 格式化当前日期 - 用于版权和更新信息
+	$: currentYear = new Date().getFullYear();
+	$: lastUpdated = new Date().toISOString().split('T')[0];
 </script>
 
 <div class="app">
-	<!-- 移除顶部广告位 -->
-
 	<nav>
 		<h1><a href="/">FreeWebGames Store</a></h1>
 		<div class="nav-links">
-			<a href="/" class:active={$page.url.pathname === '/' && !$page.url.searchParams.get('category')}>
+			<a href="/" class:active={currentPath === '/' && !currentCategory}>
 				{t('gameHomepage', lang)}
 			</a>
 			
 			{#each categoryNavItems as category}
 				<a 
 					href={category.href} 
-					class:active={$page.url.searchParams.get('category') === category.id}
+					class:active={currentCategory === category.id}
+					aria-label="{lang === 'en' ? 'Browse' : '浏览'} {category.name} {lang === 'en' ? 'games' : '游戏'}"
 				>
 					{category.name}
 				</a>
@@ -48,6 +55,7 @@
 					class="lang-btn" 
 					class:active={lang === 'en'}
 					on:click={() => handleLanguageSwitch('en')}
+					aria-label="Switch to English"
 				>
 					EN
 				</button>
@@ -55,6 +63,7 @@
 					class="lang-btn" 
 					class:active={lang === 'zh'}
 					on:click={() => handleLanguageSwitch('zh')}
+					aria-label="切换到中文"
 				>
 					中
 				</button>
@@ -66,13 +75,30 @@
 		<slot />
 	</main>
 
-	<!-- 移除底部广告位 -->
-
 	<footer class="site-footer">
 		<div class="footer-content">
 			<div class="footer-section">
 				<h3>FreeWebGames Store</h3>
 				<p>{lang === 'en' ? 'Your Next Game Is Just One Click Away - Free online gaming experience' : '你的下一个游戏只需一键即可 - 免费在线游戏体验'}</p>
+				<p class="footer-slogan">
+					{lang === 'en' ? 'Play instantly in your browser - no downloads, no registration, just fun!' : '立即在浏览器中畅玩 - 无需下载，无需注册，尽享乐趣！'}
+				</p>
+			</div>
+			
+			<div class="footer-section">
+				<h4>{lang === 'en' ? 'Game Categories' : '游戏分类'}</h4>
+				<ul class="footer-categories">
+					{#each categoryNavItems.slice(0, 5) as category}
+						<li>
+							<a href={category.href}>
+								{category.name} {lang === 'en' ? 'Games' : '游戏'}
+							</a>
+						</li>
+					{/each}
+					<li>
+						<a href="/">{lang === 'en' ? 'All Games' : '所有游戏'}</a>
+					</li>
+				</ul>
 			</div>
 			
 			<div class="footer-section">
@@ -109,10 +135,13 @@
 		<div class="footer-bottom">
 			<div class="footer-bottom-content">
 				<p class="copyright">
-					© {new Date().getFullYear()} FreeWebGames Store. {lang === 'en' ? 'All rights reserved.' : '版权所有。'}
+					© {currentYear} FreeWebGames Store. {lang === 'en' ? 'All rights reserved.' : '版权所有。'}
+				</p>
+				<p class="site-description">
+					{lang === 'en' ? 'FreeWebGames Store is your destination for free online games. Play action, puzzle, strategy, and casual games without download.' : 'FreeWebGames Store 是您的免费在线游戏目的地。无需下载即可畅玩动作、益智、策略和休闲游戏。'}
 				</p>
 				<p class="powered-by">
-					{lang === 'en' ? 'Powered by' : '技术支持'} <a href="https://kit.svelte.dev" target="_blank" rel="noopener">SvelteKit</a>
+					{lang === 'en' ? 'Powered by' : '技术支持'} <a href="https://kit.svelte.dev" target="_blank" rel="noopener">SvelteKit</a> | {lang === 'en' ? 'Last updated' : '最后更新'}: {lastUpdated}
 				</p>
 			</div>
 		</div>
@@ -451,6 +480,28 @@
 	.powered-by a:hover {
 		color: #ff6b6b;
 		text-decoration: underline;
+	}
+
+	.footer-slogan {
+		margin-top: 0.6rem;
+		font-style: italic;
+		opacity: 0.9;
+		font-size: 0.85rem;
+	}
+	
+	.footer-categories {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.5rem 1rem;
+	}
+
+	.site-description {
+		margin: 0.5rem 0;
+		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.7);
+		max-width: 800px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	@media (max-width: 768px) {

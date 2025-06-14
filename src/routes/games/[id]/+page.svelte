@@ -68,6 +68,11 @@
 	$: gameDescription = game ? 
 		`${getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang)} - Play free online at FreeWebGames Store, ${getCategoryName(game.category, lang)} free gaming experience.` : 
 		'Free online gaming experience - FreeWebGames Store';
+
+	// 新增相关元数据 - SEO优化
+	$: gameMetaTitle = game ? `Play ${getLocalizedField(game, 'title', lang)} - Free ${getCategoryName(game.category, lang)} Game` : '';
+	$: gameMetaDescription = game ? `${getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang)}. Play free ${getCategoryName(game.category, lang).toLowerCase()} games online at FreeWebGames Store.` : '';
+	$: gameType = game?.category ? getCategoryName(game.category, lang) : '';
 </script>
 
 <svelte:head>
@@ -100,8 +105,18 @@
 			</button>
 		</div>
 	{:else if game}
-		<!-- 替换game-content-wrapper为game-content-full -->
 		<div class="game-content-full">
+			<!-- 面包屑导航 - SEO优化 -->
+			<div class="breadcrumb">
+				<a href="/" class="breadcrumb-item">FreeWebGames Store</a>
+				{#if game.category}
+					<span class="breadcrumb-separator">›</span>
+					<a href="/?category={game.category}" class="breadcrumb-item">{getCategoryName(game.category, lang)} {lang === 'en' ? 'Games' : '游戏'}</a>
+				{/if}
+				<span class="breadcrumb-separator">›</span>
+				<span class="breadcrumb-item current">{getLocalizedField(game, 'title', lang)}</span>
+			</div>
+
 			<div class="game-header">
 				<button class="back-button" on:click={goBack}>
 					← {lang === 'en' ? 'Back' : '返回'}
@@ -113,14 +128,20 @@
 							<OptimizedImage
 								src={game.preview_image}
 								thumbSrc={game.preview_image_thumb}
-								alt={getLocalizedField(game, 'title', lang)}
+								alt="{getLocalizedField(game, 'title', lang)} - {getCategoryName(game.category, lang)} game on FreeWebGames Store"
 								className="preview-image"
 								lazy={false}
 							/>
 						</div>
 					{/if}
 					
-					<h1>{getLocalizedField(game, 'title', lang)}</h1>
+					<!-- 增强的游戏标题 - SEO优化 -->
+					<div class="game-title-wrapper">
+						<h1>{getLocalizedField(game, 'title', lang)}</h1>
+						<p class="game-subtitle">
+							{lang === 'en' ? 'Free' : '免费'} {getCategoryName(game.category, lang)} {lang === 'en' ? 'Game on FreeWebGames Store' : '游戏 - FreeWebGames Store'}
+						</p>
+					</div>
 					
 					<div class="game-meta">
 						{#if game.category}
@@ -144,6 +165,14 @@
 						</p>
 					{/if}
 					
+					<!-- 关于此游戏部分 - SEO优化 -->
+					<div class="about-game">
+						<h2>{lang === 'en' ? 'About' : '关于'} {getLocalizedField(game, 'title', lang)}</h2>
+						<p>
+							{getLocalizedField(game, 'title', lang)} {lang === 'en' ? 'is a free' : '是一款免费的'} {getCategoryName(game.category, lang).toLowerCase()} {lang === 'en' ? 'game that you can play online at FreeWebGames Store. Enjoy this exciting browser game without download or registration.' : '游戏，您可以在FreeWebGames Store网站上在线游玩。无需下载或注册，即可享受这款精彩的浏览器游戏。'}
+						</p>
+					</div>
+					
 					{#if getLocalizedField(game, 'instructions', lang)}
 						<div class="game-instructions">
 							<h3>{lang === 'en' ? 'Game Instructions' : '游戏说明'}</h3>
@@ -154,10 +183,18 @@
 			</div>
 
 			{#if game.iframe_url}
+				<!-- 游戏标题栏 - SEO优化 -->
+				<div class="game-frame-header">
+					<div class="game-frame-title">
+						<span class="frame-icon">{getCategoryIcon(game.category)}</span>
+						<span class="frame-text">{getLocalizedField(game, 'title', lang)} - {lang === 'en' ? 'Play Now on FreeWebGames Store' : '立即在FreeWebGames Store上游玩'}</span>
+					</div>
+				</div>
+				
 				<div class="game-frame-container">
 					<iframe 
 						src={game.iframe_url}
-						title={getLocalizedField(game, 'title', lang)}
+						title="{getLocalizedField(game, 'title', lang)} - {getCategoryName(game.category, lang)} game on FreeWebGames Store"
 						class="game-frame"
 						frameborder="0"
 						allowfullscreen
@@ -171,6 +208,13 @@
 					<p>{lang === 'en' ? 'This game is temporarily unavailable. Please try again later.' : '此游戏暂时无法加载，请稍后再试。'}</p>
 				</div>
 			{/if}
+			
+			<!-- 底部SEO信息 -->
+			<div class="seo-footer">
+				<p class="seo-text">
+					{lang === 'en' ? 'Play' : '游玩'} <strong>{getLocalizedField(game, 'title', lang)}</strong> {lang === 'en' ? 'and other free' : '和其他免费'} <a href="/?category={game.category}">{getCategoryName(game.category, lang)}</a> {lang === 'en' ? 'games on' : '游戏，尽在'} <a href="/">FreeWebGames Store</a>.
+				</p>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -264,6 +308,16 @@
 		font-size: 1.8rem;
 	}
 
+	.game-title-wrapper {
+		margin-bottom: 1rem;
+	}
+
+	.game-subtitle {
+		margin: 0.2rem 0 0 0;
+		color: #6c757d;
+		font-size: 0.9rem;
+	}
+
 	.game-meta {
 		display: flex;
 		flex-wrap: wrap;
@@ -320,6 +374,26 @@
 		font-size: 1rem;
 	}
 
+	.about-game {
+		background: #f8f9fa;
+		border-radius: 6px;
+		padding: 1rem;
+		margin: 1rem 0;
+		border-left: 3px solid #4ecdc4;
+	}
+
+	.about-game h2 {
+		margin: 0 0 0.6rem 0;
+		font-size: 1.2rem;
+		color: #343a40;
+	}
+
+	.about-game p {
+		margin: 0;
+		color: #495057;
+		line-height: 1.5;
+	}
+
 	.game-instructions {
 		background: #f8f9fa;
 		padding: 1rem;
@@ -340,12 +414,38 @@
 		line-height: 1.5;
 	}
 
+	.game-frame-header {
+		background: linear-gradient(90deg, #667eea, #764ba2);
+		color: white;
+		padding: 0.8rem 1rem;
+		border-radius: 6px 6px 0 0;
+		display: flex;
+		align-items: center;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.game-frame-title {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.frame-icon {
+		font-size: 1.2rem;
+	}
+
+	.frame-text {
+		font-weight: 600;
+		font-size: 1rem;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	}
+
 	.game-frame-container {
 		position: relative;
 		width: 100%;
 		height: 70vh;
 		min-height: 500px;
-		border-radius: 6px;
+		border-radius: 0 0 6px 6px;
 		overflow: hidden;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 		background: #f8f9fa;
@@ -414,5 +514,36 @@
 	
 	@media (max-width: 480px) {
 		/* 无需特定样式 */
+	}
+
+	/* 面包屑导航样式 */
+	.breadcrumb {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		padding: 0.5rem 0;
+		margin-bottom: 1rem;
+		color: #6c757d;
+		font-size: 0.85rem;
+	}
+	
+	.breadcrumb-item {
+		color: #6c757d;
+		text-decoration: none;
+	}
+	
+	.breadcrumb-item:hover {
+		color: #007bff;
+		text-decoration: underline;
+	}
+	
+	.breadcrumb-item.current {
+		color: #495057;
+		font-weight: 600;
+	}
+	
+	.breadcrumb-separator {
+		margin: 0 0.5rem;
+		color: #adb5bd;
 	}
 </style>
