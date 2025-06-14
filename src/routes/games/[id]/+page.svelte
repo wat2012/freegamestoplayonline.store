@@ -84,7 +84,7 @@
 	{/if}
 </svelte:head>
 
-<div class="game-container">
+<div class="game-container content-container">
 	{#if loading}
 		<div class="loading-container">
 			<div class="loading-spinner"></div>
@@ -100,75 +100,78 @@
 			</button>
 		</div>
 	{:else if game}
-		<div class="game-header">
-			<button class="back-button" on:click={goBack}>
-				← {lang === 'en' ? 'Back' : '返回'}
-			</button>
-			
-			<div class="game-info">
-				{#if game.preview_image}
-					<div class="game-preview-banner">
-						<OptimizedImage
-							src={game.preview_image}
-							thumbSrc={game.preview_image_thumb}
-							alt={getLocalizedField(game, 'title', lang)}
-							className="preview-image"
-							lazy={false}
-						/>
-					</div>
-				{/if}
+		<!-- 替换game-content-wrapper为game-content-full -->
+		<div class="game-content-full">
+			<div class="game-header">
+				<button class="back-button" on:click={goBack}>
+					← {lang === 'en' ? 'Back' : '返回'}
+				</button>
 				
-				<h1>{getLocalizedField(game, 'title', lang)}</h1>
-				
-				<div class="game-meta">
-					{#if game.category}
-						<span class="category-tag">
-							{getCategoryIcon(game.category)} {getCategoryName(game.category, lang)}
-						</span>
+				<div class="game-info">
+					{#if game.preview_image}
+						<div class="game-preview-banner">
+							<OptimizedImage
+								src={game.preview_image}
+								thumbSrc={game.preview_image_thumb}
+								alt={getLocalizedField(game, 'title', lang)}
+								className="preview-image"
+								lazy={false}
+							/>
+						</div>
 					{/if}
-					<div class="popularity-display">
-						<span class="popularity-icon">👁️</span>
-						<span class="popularity-count">{game.popularity_score || 0}</span>
-						<span class="popularity-label">{lang === 'en' ? 'views' : '次浏览'}</span>
+					
+					<h1>{getLocalizedField(game, 'title', lang)}</h1>
+					
+					<div class="game-meta">
+						{#if game.category}
+							<span class="category-tag">
+								{getCategoryIcon(game.category)} {getCategoryName(game.category, lang)}
+							</span>
+						{/if}
+						<div class="popularity-display">
+							<span class="popularity-icon">👁️</span>
+							<span class="popularity-count">{game.popularity_score || 0}</span>
+							<span class="popularity-label">{lang === 'en' ? 'views' : '次浏览'}</span>
+						</div>
+						<span class="publish-date">
+							{t('publishedOn', lang)}: {new Date(game.created_at).toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}
+						</span>
 					</div>
-					<span class="publish-date">
-						{t('publishedOn', lang)}: {new Date(game.created_at).toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}
-					</span>
+					
+					{#if getLocalizedField(game, 'description', lang)}
+						<p class="game-description">
+							{getLocalizedField(game, 'description', lang)}
+						</p>
+					{/if}
+					
+					{#if getLocalizedField(game, 'instructions', lang)}
+						<div class="game-instructions">
+							<h3>{lang === 'en' ? 'Game Instructions' : '游戏说明'}</h3>
+							<p>{getLocalizedField(game, 'instructions', lang)}</p>
+						</div>
+					{/if}
 				</div>
-				
-				{#if getLocalizedField(game, 'description', lang)}
-					<p class="game-description">
-						{getLocalizedField(game, 'description', lang)}
-					</p>
-				{/if}
-				
-				{#if getLocalizedField(game, 'instructions', lang)}
-					<div class="game-instructions">
-						<h3>{lang === 'en' ? 'Game Instructions' : '游戏说明'}</h3>
-						<p>{getLocalizedField(game, 'instructions', lang)}</p>
-					</div>
-				{/if}
 			</div>
-		</div>
 
-		{#if game.iframe_url}
-			<div class="game-frame-container">
-				<iframe 
-					src={game.iframe_url}
-					title={getLocalizedField(game, 'title', lang)}
-					class="game-frame"
-					frameborder="0"
-					allowfullscreen
-					loading="lazy"
-				></iframe>
-			</div>
-		{:else}
-			<div class="no-game-content">
-				<div class="no-game-icon">🎮</div>
-				<h3>{lang === 'en' ? 'Game Not Available' : '游戏暂不可用'}</h3>
-				<p>{lang === 'en' ? 'This game is temporarily unavailable. Please try again later.' : '此游戏暂时无法加载，请稍后再试。'}</p>
-			</div>
-		{/if}
+			{#if game.iframe_url}
+				<div class="game-frame-container">
+					<iframe 
+						src={game.iframe_url}
+						title={getLocalizedField(game, 'title', lang)}
+						class="game-frame"
+						frameborder="0"
+						allowfullscreen
+						loading="lazy"
+					></iframe>
+				</div>
+			{:else}
+				<div class="no-game-content">
+					<div class="no-game-icon">🎮</div>
+					<h3>{lang === 'en' ? 'Game Not Available' : '游戏暂不可用'}</h3>
+					<p>{lang === 'en' ? 'This game is temporarily unavailable. Please try again later.' : '此游戏暂时无法加载，请稍后再试。'}</p>
+				</div>
+			{/if}
+		</div>
 	{/if}
 </div>
 
@@ -392,47 +395,24 @@
 		border-radius: 6px;
 	}
 
-	@media (max-width: 768px) {
-		.game-container {
-			padding: 0.25rem;
-		}
-
-		.game-info h1 {
-			font-size: 1.4rem;
-		}
-
-		.game-meta {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: 0.4rem;
-		}
-
-		.game-frame-container {
-			height: 60vh;
-			min-height: 350px;
-		}
-
-		.game-instructions {
-			padding: 0.8rem;
+	/* 替换游戏内容布局样式 */
+	.game-content-full {
+		width: 100%;
+		box-sizing: border-box;
+	}
+	
+	/* 调整媒体查询 */
+	@media (max-width: 1024px) {
+		.game-content-full {
+			padding: 0 0.5rem;
 		}
 	}
-
+	
+	@media (max-width: 768px) {
+		/* 无需特定样式 */
+	}
+	
 	@media (max-width: 480px) {
-		.game-frame-container {
-			height: 50vh;
-			min-height: 300px;
-		}
-
-		.game-info h1 {
-			font-size: 1.2rem;
-		}
-
-		.game-preview-banner {
-			max-height: 200px;
-		}
-
-		:global(.preview-image) {
-			max-height: 200px;
-		}
+		/* 无需特定样式 */
 	}
 </style>

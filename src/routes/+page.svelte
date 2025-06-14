@@ -70,8 +70,8 @@
 		try {
 			// 并行请求，提高性能
 			const [latestResult, popularResult] = await Promise.all([
-				GameService.getLatestGames(5),
-				GameService.getPopularGames(5)
+				GameService.getLatestGames(4),
+				GameService.getPopularGames(4)
 			]);
 			
 			latestGames = latestResult;
@@ -169,7 +169,7 @@
 	<link rel="canonical" href={selectedCategory ? `https://freegamestoplayonline.store/?category=${selectedCategory}` : 'https://freegamestoplayonline.store'} />
 </svelte:head>
 
-<div class="container">
+<div class="container content-container">
 	<header class="page-header">
 		<div class="header-content">
 			<h1>{lang === 'en' ? 'FreeWebGames Store - Your Next Game Is Just One Click Away' : 'FreeWebGames Store - 你的下一个游戏只需一键即可'}</h1>
@@ -208,101 +208,109 @@
 		{/if}
 	</header>
 
-	{#if selectedCategory}
-		<section class="games">
-			<div class="games-header">
-				<h2>{getCategoryDisplayName(selectedCategory)}</h2>
-				<span class="games-count">
-					{t('totalGames', lang, { count: filteredGames.length })}
-				</span>
-			</div>
-			
+	<!-- 将content-with-sidebar改为main-content-full -->
+	<div class="main-content-full">
+		<!-- 主要内容区 -->
+		{#if selectedCategory}
+			<section class="games">
+				<div class="games-header">
+					<h2>{getCategoryDisplayName(selectedCategory)}</h2>
+					<span class="games-count">
+						{t('totalGames', lang, { count: filteredGames.length })}
+					</span>
+				</div>
+				
+				{#if loading}
+					<div class="loading">
+						<div class="loading-spinner"></div>
+						<p>{t('loading', lang)}</p>
+					</div>
+				{:else if filteredGames.length === 0}
+					<div class="empty-state">
+						{#if searchQuery}
+							<p>{t('noMatchingGames', lang)}</p>
+							<button 
+								class="reset-btn" 
+								on:click={() => { searchQuery = ''; filterGames(); }}
+							>
+								{t('viewAllGames', lang)}
+							</button>
+						{:else}
+							<p>{t('noGames', lang)}</p>
+						{/if}
+					</div>
+				{:else}
+					<div class="games-grid">
+						{#each filteredGames as game, i}
+							<!-- 移除内容间广告位 -->
+							<GameCard {game} {lang} index={i} />
+						{/each}
+					</div>
+				{/if}
+			</section>
+		{:else}
+			<!-- Home content sections with enhanced styling -->
 			{#if loading}
 				<div class="loading">
 					<div class="loading-spinner"></div>
 					<p>{t('loading', lang)}</p>
 				</div>
-			{:else if filteredGames.length === 0}
-				<div class="empty-state">
-					{#if searchQuery}
-						<p>{t('noMatchingGames', lang)}</p>
-						<button 
-							class="reset-btn" 
-							on:click={() => { searchQuery = ''; filterGames(); }}
-						>
-							{t('viewAllGames', lang)}
-						</button>
-					{:else}
-						<p>{t('noGames', lang)}</p>
-					{/if}
-				</div>
 			{:else}
-				<div class="games-grid">
-					{#each filteredGames as game, i}
-						<GameCard {game} {lang} index={i} />
-					{/each}
-				</div>
-			{/if}
-		</section>
-	{:else}
-		<!-- Home content sections with enhanced styling -->
-		{#if loading}
-			<div class="loading">
-				<div class="loading-spinner"></div>
-				<p>{t('loading', lang)}</p>
-			</div>
-		{:else}
-			<!-- 最新游戏板块 -->
-			<section class="home-section latest-games-section">
-				<div class="section-header">
-					<div class="section-icon">🆕</div>
-					<div class="section-titles">
-						<h2>{t('latestGames', lang)}</h2>
-						<p>{t('latestGamesDesc', lang)}</p>
+				<!-- 最新游戏板块 -->
+				<section class="home-section latest-games-section">
+					<div class="section-header">
+						<div class="section-icon">🆕</div>
+						<div class="section-titles">
+							<h2>{t('latestGames', lang)}</h2>
+							<p>{t('latestGamesDesc', lang)}</p>
+						</div>
 					</div>
-				</div>
-				{#if latestGames.length > 0}
-					<div class="games-grid">
-						{#each latestGames as game, i}
-							<GameCard {game} {lang} index={i} />
-						{/each}
-					</div>
-				{:else}
-					<div class="empty-state">
-						<p>{t('noGames', lang)}</p>
-					</div>
-				{/if}
-			</section>
+					{#if latestGames.length > 0}
+						<div class="games-grid">
+							{#each latestGames as game, i}
+								<GameCard {game} {lang} index={i} />
+							{/each}
+						</div>
+					{:else}
+						<div class="empty-state">
+							<p>{t('noGames', lang)}</p>
+						</div>
+					{/if}
+				</section>
 
-			<!-- 热门游戏板块 -->
-			<section class="home-section popular-games-section">
-				<div class="section-header">
-					<div class="section-icon">🔥</div>
-					<div class="section-titles">
-						<h2>{t('popularGames', lang)}</h2>
-						<p>{t('popularGamesDesc', lang)}</p>
+				<!-- 移除内容间广告位 -->
+
+				<!-- 热门游戏板块 -->
+				<section class="home-section popular-games-section">
+					<div class="section-header">
+						<div class="section-icon">🔥</div>
+						<div class="section-titles">
+							<h2>{t('popularGames', lang)}</h2>
+							<p>{t('popularGamesDesc', lang)}</p>
+						</div>
 					</div>
-				</div>
-				{#if popularGames.length > 0}
-					<div class="games-grid">
-						{#each popularGames as game, i}
-							<GameCard {game} {lang} index={i} />
-						{/each}
-					</div>
-				{:else}
-					<div class="empty-state">
-						<p>{t('noGames', lang)}</p>
-					</div>
-				{/if}
-			</section>
+					{#if popularGames.length > 0}
+						<div class="games-grid">
+							{#each popularGames as game, i}
+								<GameCard {game} {lang} index={i} />
+							{/each}
+						</div>
+					{:else}
+						<div class="empty-state">
+							<p>{t('noGames', lang)}</p>
+						</div>
+					{/if}
+				</section>
+			{/if}
 		{/if}
-	{/if}
+	</div>
 </div>
 
 <style>
 	.container {
 		width: 100%;
 		padding: 0;
+		box-sizing: border-box; /* 添加盒模型设置 */
 	}
 
 	.page-header {
@@ -765,97 +773,24 @@
 		transition: all 0.3s ease;
 	}
 
-	@media (max-width: 768px) {
-		.page-header {
-			padding: 0.6rem 0.3rem;
-		}
-		
-		.page-header h1 {
-			font-size: 1.3rem;
-		}
-		
-		.page-header p {
-			font-size: 0.8rem;
-		}
-		
-		.section-header {
-			flex-direction: column;
-			text-align: center;
-			gap: 0.5rem;
-		}
-		
-		.section-icon {
-			margin: 0 auto;
-			width: 35px;
-			height: 35px;
-			font-size: 1.1rem;
-		}
-		
-		.games-header {
-			flex-direction: column;
-			gap: 0.2rem;
-			text-align: center;
-			padding: 0.4rem 0.5rem;
-		}
-
-		.games-grid {
-			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-			gap: 0.5rem;
-			padding: 0 0.2rem;
-		}
-
-		.home-section {
-			margin-bottom: 0.8rem;
-			padding: 0.6rem 0.2rem;
-			margin-left: 0.2rem;
-			margin-right: 0.2rem;
-		}
-
-		.empty-state {
-			margin: 0 0.2rem;
-			padding: 1rem 0.5rem;
-		}
-
+	.main-content-full {
+		width: 100%;
+		box-sizing: border-box;
 	}
-
+	
+	/* 调整媒体查询 */
+	@media (max-width: 1024px) {
+		.main-content-full {
+			padding: 0 0.5rem;
+		}
+	}
+	
+	@media (max-width: 768px) {
+		/* 无需特定样式 */
+	}
+	
 	@media (max-width: 480px) {
-		.deco-item {
-			display: none;
-		}
-
-		.page-header {
-			padding: 0.5rem 0.2rem;
-		}
-
-		.page-header h1 {
-			font-size: 1.1rem;
-		}
-
-		.games-grid {
-			grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-			gap: 0.4rem;
-			padding: 0 0.2rem;
-		}
-
-		.home-section {
-			margin-left: 0.2rem;
-			margin-right: 0.2rem;
-			padding: 0.5rem 0.2rem;
-		}
-
-		.section-header h2 {
-			font-size: 1rem;
-		}
-
-		.section-icon {
-			width: 32px;
-			height: 32px;
-			font-size: 1rem;
-		}
-
-		.empty-state {
-			margin: 0 0.2rem;
-		}
+		/* 无需特定样式 */
 	}
 
 	/* Large screens optimization - better grid utilization */

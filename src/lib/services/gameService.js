@@ -211,8 +211,8 @@ export class GameService {
 	// 批量预加载
 	static async preloadGameData() {
 		const promises = [
-			this.getPopularGames(5),
-			this.getLatestGames(5),
+			this.getPopularGames(4),
+			this.getLatestGames(4),
 			this.getGameStats()
 		];
 		

@@ -25,6 +25,8 @@
 </script>
 
 <div class="app">
+	<!-- 移除顶部广告位 -->
+
 	<nav>
 		<h1><a href="/">FreeWebGames Store</a></h1>
 		<div class="nav-links">
@@ -63,6 +65,8 @@
 	<main>
 		<slot />
 	</main>
+
+	<!-- 移除底部广告位 -->
 
 	<footer class="site-footer">
 		<div class="footer-content">
@@ -271,6 +275,15 @@
 		backdrop-filter: blur(5px);
 		box-sizing: border-box;
 		width: 100%;
+		display: flex;
+		justify-content: center; /* 添加水平居中 */
+	}
+
+	/* 添加一个全局内容容器类，限制内容最大宽度并居中 */
+	:global(.content-container) {
+		width: 100%;
+		max-width: 1400px;
+		margin: 0 auto;
 	}
 
 	.site-footer {
@@ -474,12 +487,6 @@
 		.footer-bottom-content {
 			padding: 0 0.5rem;
 		}
-
-		.footer-language-switcher {
-			flex-direction: row;
-			gap: 0.4rem;
-		}
-
 		.footer-lang-btn {
 			flex: 1;
 			text-align: center;
