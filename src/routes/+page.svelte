@@ -146,12 +146,12 @@
 		"itemListElement": filteredGames.map((game, index) => ({
 			"@type": "VideoGame",
 			"position": index + 1,
-			"name": getLocalizedField(game, 'title', lang),
-			"description": getLocalizedField(game, 'description', lang) || "Free online gaming experience",
+			"name": getLocalizedField(game, 'title', lang) || "Untitled Game",
+			"description": getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang) || "Free online gaming experience",
 			"url": `https://freegamestoplayonline.store/games/${game.id}`,
-			"genre": getCategoryDisplayName(game.category),
-			"datePublished": game.created_at,
-			"image": game.preview_image,
+			"genre": getCategoryDisplayName(game.category || selectedCategory),
+			"datePublished": game.created_at || new Date().toISOString(),
+			...(game.preview_image && { "image": game.preview_image }),
 			"aggregateRating": {
 				"@type": "AggregateRating",
 				"ratingValue": "4.5",
@@ -159,6 +159,38 @@
 			}
 		}))
 	};
+
+	// 生成集合页面结构化数据
+	$: collectionPageData = selectedCategory && filteredGames.length > 0 ? {
+		"@context": "https://schema.org",
+		"@type": "CollectionPage",
+		"name": `${getCategoryDisplayName(selectedCategory)} Games - FreeWebGames Store`,
+		"description": categoryDescription,
+		"url": `https://freegamestoplayonline.store/?category=${selectedCategory}`,
+		"mainEntity": {
+			"@type": "ItemList",
+			"numberOfItems": filteredGames.length,
+			"itemListElement": filteredGames.slice(0, 10).map((game, index) => ({
+				"@type": "ListItem",
+				"position": index + 1,
+				"url": `https://freegamestoplayonline.store/games/${game.id}`,
+				"name": getLocalizedField(game, 'title', lang) || "Untitled Game"
+			}))
+		}
+	} : null;
+
+	// 生成首页结构化数据
+	$: homePageData = !selectedCategory ? {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		"name": "FreeWebGames Store - Your Next Game Is Just One Click Away",
+		"description": "Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser!",
+		"url": "https://freegamestoplayonline.store",
+		"speakable": {
+			"@type": "SpeakableSpecification",
+			"cssSelector": [".page-header h1", ".page-header p"]
+		}
+	} : null;
 </script>
 
 <svelte:head>
@@ -180,42 +212,16 @@
 	<meta name="twitter:description" content={pageDescription} />
 	<meta name="twitter:image" content="https://freegamestoplayonline.store/og-image.jpg" />
 	
-	<!-- 结构化数据 - 不仅保留ItemList也增加WebPage信息 -->
+	<!-- 结构化数据 - 修复JSON错误 -->
 	{#if selectedCategory && filteredGames.length > 0}
-		<script type="application/ld+json">{JSON.stringify(structuredData)}</script>
-		<script type="application/ld+json">
-		{JSON.stringify({
-			"@context": "https://schema.org",
-			"@type": "CollectionPage",
-			"name": `${getCategoryDisplayName(selectedCategory)} Games - FreeWebGames Store`,
-			"description": categoryDescription,
-			"url": `https://freegamestoplayonline.store/?category=${selectedCategory}`,
-			"mainEntity": {
-				"@type": "ItemList",
-				"numberOfItems": filteredGames.length,
-				"itemListElement": filteredGames.slice(0, 10).map((game, index) => ({
-					"@type": "ListItem",
-					"position": index + 1,
-					"url": `https://freegamestoplayonline.store/games/${game.id}`,
-					"name": getLocalizedField(game, 'title', lang)
-				}))
-			}
-		})}
-		</script>
-	{:else}
-		<script type="application/ld+json">
-		{JSON.stringify({
-			"@context": "https://schema.org",
-			"@type": "WebPage",
-			"name": "FreeWebGames Store - Your Next Game Is Just One Click Away",
-			"description": "Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser!",
-			"url": "https://freegamestoplayonline.store",
-			"speakable": {
-				"@type": "SpeakableSpecification",
-				"cssSelector": [".page-header h1", ".page-header p"]
-			}
-		})}
-		</script>
+		{#if structuredData}
+			<script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+		{/if}
+		{#if collectionPageData}
+			<script type="application/ld+json">{JSON.stringify(collectionPageData)}</script>
+		{/if}
+	{:else if homePageData}
+		<script type="application/ld+json">{JSON.stringify(homePageData)}</script>
 	{/if}
 	
 	<!-- Canonical URL -->
@@ -288,7 +294,7 @@
 						{#if lang === 'en'}
 							Discover our collection of <strong>{filteredGames.length} free {getCategoryDisplayName(selectedCategory).toLowerCase()} games</strong> at <strong>FreeWebGames Store</strong>. All games are playable directly in your browser without download or registration. Enjoy the best {getCategoryDisplayName(selectedCategory).toLowerCase()} gaming experience online!
 						{:else}
-						 在<strong>FreeWebGames Store</strong>上探索我们的<strong>{filteredGames.length}款免费{getCategoryDisplayName(selectedCategory)}游戏</strong>。所有游戏都可以直接在浏览器中玩，无需下载或注册。享受最佳的在线{getCategoryDisplayName(selectedCategory)}游戏体验！
+						 在<strong>FreeWebGames Store</strong>上探索我们的<strong>{filteredGames.length}款免费{getCategoryDisplayName(selectedCategory)}游戏</strong>。所有游戏都可以直接在浏览器中玩，无需下载或注册。享受最佳的在线{getCategoryDisplayName(selectedCategory).toLowerCase()}游戏体验！
 						{/if}
 					</p>
 				</div>

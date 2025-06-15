@@ -73,6 +73,34 @@
 	$: gameMetaTitle = game ? `Play ${getLocalizedField(game, 'title', lang)} - Free ${getCategoryName(game.category, lang)} Game` : '';
 	$: gameMetaDescription = game ? `${getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang)}. Play free ${getCategoryName(game.category, lang).toLowerCase()} games online at FreeWebGames Store.` : '';
 	$: gameType = game?.category ? getCategoryName(game.category, lang) : '';
+
+	// 生成游戏页面结构化数据
+	$: gameStructuredData = game ? {
+		"@context": "https://schema.org",
+		"@type": "VideoGame",
+		"name": getLocalizedField(game, 'title', lang) || "Untitled Game",
+		"description": getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang) || "Free online gaming experience",
+		"url": `https://freegamestoplayonline.store/games/${game.id}`,
+		"genre": getCategoryName(game.category, lang),
+		"datePublished": game.created_at || new Date().toISOString(),
+		...(game.preview_image && { "image": game.preview_image }),
+		"publisher": {
+			"@type": "Organization",
+			"name": "FreeWebGames Store",
+			"url": "https://freegamestoplayonline.store"
+		},
+		"aggregateRating": {
+			"@type": "AggregateRating",
+			"ratingValue": "4.5",
+			"ratingCount": "100"
+		},
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD",
+			"availability": "https://schema.org/InStock"
+		}
+	} : null;
 </script>
 
 <svelte:head>
@@ -83,6 +111,10 @@
 		{#if game.preview_image}
 			<meta property="og:image" content={game.preview_image} />
 			<meta property="twitter:image" content={game.preview_image} />
+		{/if}
+		<!-- 游戏页面结构化数据 -->
+		{#if gameStructuredData}
+			<script type="application/ld+json">{JSON.stringify(gameStructuredData)}</script>
 		{/if}
 	{:else}
 		<title>Game - FreeWebGames Store</title>
