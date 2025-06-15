@@ -23,9 +23,9 @@
 		href: `/?category=${categoryId}`
 	}));
 
-	// 添加全局路径追踪
-	$: currentPath = $page.url.pathname;
-	$: currentCategory = $page.url.searchParams.get('category') || '';
+	// 添加全局路径追踪 - 添加防护措施
+	$: currentPath = $page?.url?.pathname || '/';
+	$: currentCategory = $page?.url?.searchParams?.get('category') || '';
 	
 	// 格式化当前日期 - 用于版权和更新信息
 	$: currentYear = new Date().getFullYear();

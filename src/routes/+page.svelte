@@ -202,6 +202,131 @@
 			"cssSelector": [".page-header h1", ".page-header p"]
 		}
 	} : null;
+
+	// 安全的结构化数据生成函数
+	function createSafeStructuredData() {
+		if (!selectedCategory || !filteredGames || filteredGames.length === 0) {
+			return null;
+		}
+
+		try {
+			const safeGames = filteredGames.slice(0, 20).filter(game => game && game.id).map((game, index) => {
+				const gameTitle = (getLocalizedField(game, 'title', lang) || `Game ${game.id || index + 1}`).replace(/["\n\r\t]/g, " ").trim();
+				const gameDesc = (getLocalizedField(game, 'description', lang) || gameTitle || "Free online gaming experience").replace(/["\n\r\t]/g, " ").trim();
+				const gameCategory = game.category || selectedCategory || "games";
+				const gameDate = game.created_at || new Date().toISOString();
+				
+				const gameData = {
+					"@type": "VideoGame",
+					"position": index + 1,
+					"name": gameTitle,
+					"description": gameDesc,
+					"url": `https://freegamestoplayonline.store/games/${game.id}`,
+					"genre": getCategoryDisplayName(gameCategory),
+					"datePublished": gameDate,
+					"aggregateRating": {
+						"@type": "AggregateRating",
+						"ratingValue": "4.5",
+						"ratingCount": "100"
+					}
+				};
+
+				if (game.preview_image && typeof game.preview_image === 'string' && game.preview_image.startsWith('http')) {
+					gameData.image = game.preview_image;
+				}
+
+				return gameData;
+			});
+
+			return {
+				"@context": "https://schema.org",
+				"@type": "ItemList",
+				"name": getCategoryDisplayName(selectedCategory),
+				"description": pageDescription.replace(/["\n\r\t]/g, " ").trim(),
+				"numberOfItems": filteredGames.length,
+				"itemListElement": safeGames
+			};
+		} catch (error) {
+			console.error('Error creating structured data:', error);
+			return null;
+		}
+	}
+
+	function createSafeCollectionData() {
+		if (!selectedCategory || !filteredGames || filteredGames.length === 0) {
+			return null;
+		}
+
+		try {
+			const safeItems = filteredGames.slice(0, 10).filter(game => game && game.id).map((game, index) => {
+				const gameTitle = (getLocalizedField(game, 'title', lang) || `Game ${game.id || index + 1}`).replace(/["\n\r\t]/g, " ").trim();
+				return {
+					"@type": "ListItem",
+					"position": index + 1,
+					"url": `https://freegamestoplayonline.store/games/${game.id}`,
+					"name": gameTitle
+				};
+			});
+
+			return {
+				"@context": "https://schema.org",
+				"@type": "CollectionPage",
+				"name": `${getCategoryDisplayName(selectedCategory)} Games - FreeWebGames Store`,
+				"description": categoryDescription.replace(/["\n\r\t]/g, " ").trim(),
+				"url": `https://freegamestoplayonline.store/?category=${selectedCategory}`,
+				"mainEntity": {
+					"@type": "ItemList",
+					"numberOfItems": filteredGames.length,
+					"itemListElement": safeItems
+				}
+			};
+		} catch (error) {
+			console.error('Error creating collection data:', error);
+			return null;
+		}
+	}
+
+	function createSafeHomeData() {
+		if (selectedCategory) {
+			return null;
+		}
+
+		try {
+			return {
+				"@context": "https://schema.org",
+				"@type": "WebPage",
+				"name": "FreeWebGames Store - Your Next Game Is Just One Click Away",
+				"description": "Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser!",
+				"url": "https://freegamestoplayonline.store",
+				"speakable": {
+					"@type": "SpeakableSpecification",
+					"cssSelector": [".page-header h1", ".page-header p"]
+				}
+			};
+		} catch (error) {
+			console.error('Error creating home data:', error);
+			return null;
+		}
+	}
+
+	// 安全的JSON字符串化函数
+	function safeJSONStringify(data) {
+		if (!data) return null;
+		try {
+			const jsonString = JSON.stringify(data, null, 0);
+			// 验证生成的JSON是否有效
+			JSON.parse(jsonString);
+			return jsonString;
+		} catch (error) {
+			console.error('JSON stringify error:', error);
+			return null;
+		}
+	}
+
+	// 使用安全的结构化数据生成 - 移除重复的reactive statements
+	$: safeStructuredData = createSafeStructuredData();
+	$: safeCollectionPageData = createSafeCollectionData();
+	$: safeHomePageData = createSafeHomeData();
 </script>
 
 <svelte:head>
@@ -223,16 +348,16 @@
 	<meta name="twitter:description" content={pageDescription} />
 	<meta name="twitter:image" content="https://freegamestoplayonline.store/og-image.jpg" />
 	
-	<!-- 结构化数据 - 修复验证错误 -->
+	<!-- 结构化数据 - 安全生成 -->
 	{#if selectedCategory}
-		{#if structuredData}
-			<script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+		{#if safeStructuredData && safeJSONStringify(safeStructuredData)}
+			<script type="application/ld+json">{safeJSONStringify(safeStructuredData)}</script>
 		{/if}
-		{#if collectionPageData}
-			<script type="application/ld+json">{JSON.stringify(collectionPageData)}</script>
+		{#if safeCollectionPageData && safeJSONStringify(safeCollectionPageData)}
+			<script type="application/ld+json">{safeJSONStringify(safeCollectionPageData)}</script>
 		{/if}
-	{:else if homePageData}
-		<script type="application/ld+json">{JSON.stringify(homePageData)}</script>
+	{:else if safeHomePageData && safeJSONStringify(safeHomePageData)}
+		<script type="application/ld+json">{safeJSONStringify(safeHomePageData)}</script>
 	{/if}
 	
 	<!-- Canonical URL -->

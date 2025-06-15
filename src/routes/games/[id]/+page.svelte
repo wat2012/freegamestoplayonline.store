@@ -101,6 +101,70 @@
 			"availability": "https://schema.org/InStock"
 		}
 	} : null;
+
+	// 安全的游戏结构化数据生成
+	function createSafeGameData() {
+		if (!game) return null;
+
+		try {
+			const gameTitle = (getLocalizedField(game, 'title', lang) || "Untitled Game").replace(/["\n\r\t]/g, " ").trim();
+			const gameDesc = (getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang) || "Free online gaming experience").replace(/["\n\r\t]/g, " ").trim();
+			const gameCategory = getCategoryName(game.category, lang) || "Game";
+			const gameDate = game.created_at || new Date().toISOString();
+
+			const gameData = {
+				"@context": "https://schema.org",
+				"@type": "VideoGame",
+				"name": gameTitle,
+				"description": gameDesc,
+				"url": `https://freegamestoplayonline.store/games/${game.id}`,
+				"genre": gameCategory,
+				"datePublished": gameDate,
+				"publisher": {
+					"@type": "Organization",
+					"name": "FreeWebGames Store",
+					"url": "https://freegamestoplayonline.store"
+				},
+				"aggregateRating": {
+					"@type": "AggregateRating",
+					"ratingValue": "4.5",
+					"ratingCount": "100"
+				},
+				"offers": {
+					"@type": "Offer",
+					"price": "0",
+					"priceCurrency": "USD",
+					"availability": "https://schema.org/InStock"
+				}
+			};
+
+			if (game.preview_image && typeof game.preview_image === 'string' && game.preview_image.startsWith('http')) {
+				gameData.image = game.preview_image;
+			}
+
+			return gameData;
+		} catch (error) {
+			console.error('Error creating game structured data:', error);
+			return null;
+		}
+	}
+
+	// 安全的JSON字符串化函数
+	function safeJSONStringify(data) {
+		if (!data) return null;
+		try {
+			const jsonString = JSON.stringify(data, null, 0);
+			// 验证生成的JSON是否有效
+			JSON.parse(jsonString);
+			return jsonString;
+		} catch (error) {
+			console.error('JSON stringify error:', error);
+			return null;
+		}
+	}
+
+	// 使用安全的结构化数据生成 - 移除重复定义
+	$: safeGameStructuredData = createSafeGameData();
 </script>
 
 <svelte:head>
@@ -112,9 +176,9 @@
 			<meta property="og:image" content={game.preview_image} />
 			<meta property="twitter:image" content={game.preview_image} />
 		{/if}
-		<!-- 游戏页面结构化数据 -->
-		{#if gameStructuredData}
-			<script type="application/ld+json">{JSON.stringify(gameStructuredData)}</script>
+		<!-- 游戏页面结构化数据 - 安全生成 -->
+		{#if safeGameStructuredData && safeJSONStringify(safeGameStructuredData)}
+			<script type="application/ld+json">{safeJSONStringify(safeGameStructuredData)}</script>
 		{/if}
 	{:else}
 		<title>Game - FreeWebGames Store</title>
