@@ -12,6 +12,7 @@
 	} from '$lib/utils/language.js';
 	import { GameService } from '$lib/services/gameService.js';
 	import GameCard from '$lib/components/GameCard.svelte';
+	import { categoryTranslations } from '$lib/translations/categories';
 
 	let games = [];
 	let filteredGames = [];
