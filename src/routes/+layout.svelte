@@ -130,6 +130,27 @@
 					</button>
 				</div>
 			</div>
+			
+			<div class="footer-section">
+				<h4>{lang === 'en' ? 'Friends Links' : '友情链接'}</h4>
+				<ul class="friends-links">
+					<li>
+						<a href="https://dogtrainingnearme.online" target="_blank" rel="noopener noreferrer">
+							dogtrainingnearme.online
+						</a>
+					</li>
+					<li>
+						<a href="https://freeteris.shop" target="_blank" rel="noopener noreferrer">
+							freeteris.shop
+						</a>
+					</li>
+					<li>
+						<a href="https://vipgame.my" target="_blank" rel="noopener noreferrer">
+							vipgame.my
+						</a>
+					</li>
+				</ul>
+			</div>
 		</div>
 		
 		<div class="footer-bottom">
