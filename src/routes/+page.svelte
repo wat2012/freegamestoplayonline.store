@@ -136,32 +136,40 @@
 		? `Play the best free ${getCategoryDisplayName(selectedCategory).toLowerCase()} games online at FreeWebGames Store. No downloads, no registration required - just click and play ${filteredGames.length} amazing ${getCategoryDisplayName(selectedCategory).toLowerCase()} games directly in your browser.`
 		: 'Your Next Game Is Just One Click Away. Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games without registration or download.';
 
-	// 生成结构化数据
-	$: structuredData = {
+	// 生成结构化数据 - 修复验证错误
+	$: structuredData = selectedCategory && filteredGames && filteredGames.length > 0 ? {
 		"@context": "https://schema.org",
 		"@type": "ItemList",
-		"name": selectedCategory ? getCategoryDisplayName(selectedCategory) : "Free Games",
+		"name": getCategoryDisplayName(selectedCategory),
 		"description": pageDescription,
 		"numberOfItems": filteredGames.length,
-		"itemListElement": filteredGames.map((game, index) => ({
-			"@type": "VideoGame",
-			"position": index + 1,
-			"name": getLocalizedField(game, 'title', lang) || "Untitled Game",
-			"description": getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang) || "Free online gaming experience",
-			"url": `https://freegamestoplayonline.store/games/${game.id}`,
-			"genre": getCategoryDisplayName(game.category || selectedCategory),
-			"datePublished": game.created_at || new Date().toISOString(),
-			...(game.preview_image && { "image": game.preview_image }),
-			"aggregateRating": {
-				"@type": "AggregateRating",
-				"ratingValue": "4.5",
-				"ratingCount": "100"
-			}
-		}))
-	};
+		"itemListElement": filteredGames.slice(0, 20).map((game, index) => {
+			// 确保所有字段都有有效值
+			const gameTitle = getLocalizedField(game, 'title', lang) || `Game ${game.id || index + 1}`;
+			const gameDesc = getLocalizedField(game, 'description', lang) || gameTitle || "Free online gaming experience";
+			const gameCategory = game.category || selectedCategory || "games";
+			const gameDate = game.created_at || new Date().toISOString();
+			
+			return {
+				"@type": "VideoGame",
+				"position": index + 1,
+				"name": gameTitle,
+				"description": gameDesc,
+				"url": `https://freegamestoplayonline.store/games/${game.id}`,
+				"genre": getCategoryDisplayName(gameCategory),
+				"datePublished": gameDate,
+				...(game.preview_image && { "image": game.preview_image }),
+				"aggregateRating": {
+					"@type": "AggregateRating",
+					"ratingValue": "4.5",
+					"ratingCount": "100"
+				}
+			};
+		})
+	} : null;
 
-	// 生成集合页面结构化数据
-	$: collectionPageData = selectedCategory && filteredGames.length > 0 ? {
+	// 生成集合页面结构化数据 - 简化版本
+	$: collectionPageData = selectedCategory && filteredGames && filteredGames.length > 0 ? {
 		"@context": "https://schema.org",
 		"@type": "CollectionPage",
 		"name": `${getCategoryDisplayName(selectedCategory)} Games - FreeWebGames Store`,
@@ -170,16 +178,19 @@
 		"mainEntity": {
 			"@type": "ItemList",
 			"numberOfItems": filteredGames.length,
-			"itemListElement": filteredGames.slice(0, 10).map((game, index) => ({
-				"@type": "ListItem",
-				"position": index + 1,
-				"url": `https://freegamestoplayonline.store/games/${game.id}`,
-				"name": getLocalizedField(game, 'title', lang) || "Untitled Game"
-			}))
+			"itemListElement": filteredGames.slice(0, 10).map((game, index) => {
+				const gameTitle = getLocalizedField(game, 'title', lang) || `Game ${game.id || index + 1}`;
+				return {
+					"@type": "ListItem",
+					"position": index + 1,
+					"url": `https://freegamestoplayonline.store/games/${game.id}`,
+					"name": gameTitle
+				};
+			})
 		}
 	} : null;
 
-	// 生成首页结构化数据
+	// 生成首页结构化数据 - 保持简单
 	$: homePageData = !selectedCategory ? {
 		"@context": "https://schema.org",
 		"@type": "WebPage",
@@ -203,7 +214,7 @@
 	<meta property="og:description" content={pageDescription} />
 	<meta property="og:url" content={selectedCategory ? `https://freegamestoplayonline.store/?category=${selectedCategory}` : 'https://freegamestoplayonline.store'} />
 	<meta property="og:image" content="https://freegamestoplayonline.store/og-image.jpg" />
-	<meta property="og:type" content={selectedCategory ? "website" : "website"} />
+	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="FreeWebGames Store" />
 	
 	<!-- Twitter Card - 优化推特分享 -->
@@ -212,8 +223,8 @@
 	<meta name="twitter:description" content={pageDescription} />
 	<meta name="twitter:image" content="https://freegamestoplayonline.store/og-image.jpg" />
 	
-	<!-- 结构化数据 - 修复JSON错误 -->
-	{#if selectedCategory && filteredGames.length > 0}
+	<!-- 结构化数据 - 修复验证错误 -->
+	{#if selectedCategory}
 		{#if structuredData}
 			<script type="application/ld+json">{JSON.stringify(structuredData)}</script>
 		{/if}
