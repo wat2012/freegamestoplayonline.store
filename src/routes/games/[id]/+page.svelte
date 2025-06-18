@@ -64,14 +64,14 @@
 		}
 	}
 
-	$: gameTitle = game ? `${getLocalizedField(game, 'title', lang)} - Free Online Game | FreeWebGames Store` : 'Game - FreeWebGames Store';
+	$: gameTitle = game ? `${getLocalizedField(game, 'title', lang)} - Free Online Game | FreeWebGames Store` : 'FreeWebGames - Online Gaming Experience';
 	$: gameDescription = game ? 
-		`${getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang)} - Play free online at FreeWebGames Store, ${getCategoryName(game.category, lang)} free gaming experience.` : 
-		'Free online gaming experience - FreeWebGames Store';
+		`${getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang)} - Play free online at FreeWebGames Store. Experience the best freewebgames collection with ${getCategoryName(game.category, lang)} gaming.` : 
+		'FreeWebGames - Premium free online gaming experience at FreeWebGames Store';
 
-	// 新增相关元数据 - SEO优化
-	$: gameMetaTitle = game ? `Play ${getLocalizedField(game, 'title', lang)} - Free ${getCategoryName(game.category, lang)} Game` : '';
-	$: gameMetaDescription = game ? `${getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang)}. Play free ${getCategoryName(game.category, lang).toLowerCase()} games online at FreeWebGames Store.` : '';
+	// 新增相关元数据 - SEO优化 with freewebgames
+	$: gameMetaTitle = game ? `Play ${getLocalizedField(game, 'title', lang)} - Free ${getCategoryName(game.category, lang)} Game | FreeWebGames` : '';
+	$: gameMetaDescription = game ? `${getLocalizedField(game, 'description', lang) || getLocalizedField(game, 'title', lang)}. Play free ${getCategoryName(game.category, lang).toLowerCase()} games online at FreeWebGames Store. Best freewebgames experience.` : '';
 	$: gameType = game?.category ? getCategoryName(game.category, lang) : '';
 
 	// 生成游戏页面结构化数据

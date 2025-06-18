@@ -46,7 +46,7 @@ export async function GET() {
 		<xhtml:link rel="alternate" hreflang="zh" href="${baseUrl}/" />
 	</url>`;
 
-		// 添加分类页面
+		// 添加分类页面 - 增强 freewebgames SEO
 		categories.forEach(category => {
 			sitemap += `
 	<url>
@@ -58,6 +58,17 @@ export async function GET() {
 		<xhtml:link rel="alternate" hreflang="zh" href="${baseUrl}/?category=${category}" />
 	</url>`;
 		});
+
+		// 添加 freewebgames 主题页面
+		sitemap += `
+	<url>
+		<loc>${baseUrl}/freewebgames</loc>
+		<lastmod>${currentDate}</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.9</priority>
+		<xhtml:link rel="alternate" hreflang="en" href="${baseUrl}/freewebgames" />
+		<xhtml:link rel="alternate" hreflang="zh" href="${baseUrl}/freewebgames" />
+	</url>`;
 
 		// 添加游戏详情页面
 		if (games && games.length > 0) {

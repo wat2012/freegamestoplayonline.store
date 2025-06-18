@@ -79,9 +79,9 @@
 		<div class="footer-content">
 			<div class="footer-section">
 				<h3>FreeWebGames Store</h3>
-				<p>{lang === 'en' ? 'Your Next Game Is Just One Click Away - Free online gaming experience' : '你的下一个游戏只需一键即可 - 免费在线游戏体验'}</p>
+				<p>{lang === 'en' ? 'Your Next Game Is Just One Click Away - Premium freewebgames experience' : '你的下一个游戏只需一键即可 - 优质免费在线游戏体验'}</p>
 				<p class="footer-slogan">
-					{lang === 'en' ? 'Play instantly in your browser - no downloads, no registration, just fun!' : '立即在浏览器中畅玩 - 无需下载，无需注册，尽享乐趣！'}
+					{lang === 'en' ? 'Play premium freewebgames instantly in your browser - no downloads, no registration, just fun!' : '立即在浏览器中畅玩优质免费游戏 - 无需下载，无需注册，尽享乐趣！'}
 				</p>
 			</div>
 			

@@ -16,30 +16,30 @@ export const categoryTranslations = {
 	casual: { en: 'Casual Games', zh: '休闲游戏', icon: '🎯' }
 };
 
-// 界面文本的双语映射 - 英文优先
+// 界面文本的双语映射 - 英文优先 with freewebgames
 export const uiTranslations = {
 	en: {
 		// 通用
-		allGames: 'All Games',
-		searchPlaceholder: 'Search games...',
+		allGames: 'All FreeWebGames',
+		searchPlaceholder: 'Search freewebgames...',
 		loading: 'Loading...',
-		noGames: 'No games available',
-		noMatchingGames: 'No matching games found',
-		viewAllGames: 'View All Games',
+		noGames: 'No freewebgames available',
+		noMatchingGames: 'No matching freewebgames found',
+		viewAllGames: 'View All FreeWebGames',
 		startGame: 'Play Now',
 		publishedOn: 'Published on',
-		totalGames: '{count} free games',
+		totalGames: '{count} premium freewebgames',
 		
-		// 首页SEO优化
+		// 首页SEO优化 with freewebgames
 		welcomeTitle: 'FreeWebGames Store - Your Next Game Is Just One Click Away',
-		welcomeDescription: 'Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser!',
-		latestGames: 'Latest Games',
-		latestGamesDesc: 'Discover our newest free games, fresh additions to our collection',
-		popularGames: 'Popular Games',
-		popularGamesDesc: 'Most loved games by our community - join the fun!',
-		gameCategories: 'Game Categories',
-		noDescription: 'Free online gaming experience',
-		gameHomepage: 'Home',
+		welcomeDescription: 'Discover thousands of premium freewebgames including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser!',
+		latestGames: 'Latest FreeWebGames',
+		latestGamesDesc: 'Discover our newest premium freewebgames, fresh additions to our collection',
+		popularGames: 'Popular FreeWebGames',
+		popularGamesDesc: 'Most loved freewebgames by our community - join the fun!',
+		gameCategories: 'FreeWebGames Categories',
+		noDescription: 'Premium freewebgames experience',
+		gameHomepage: 'FreeWebGames Home',
 		views: 'views',
 		viewsCount: '{count} views',
 		
@@ -76,26 +76,26 @@ export const uiTranslations = {
 	},
 	zh: {
 		// 通用
-		allGames: '全部游戏',
-		searchPlaceholder: '搜索游戏名称...',
+		allGames: '全部免费游戏',
+		searchPlaceholder: '搜索免费游戏名称...',
 		loading: '加载中...',
-		noGames: '暂无游戏',
-		noMatchingGames: '没有找到符合条件的游戏',
-		viewAllGames: '查看全部游戏',
+		noGames: '暂无免费游戏',
+		noMatchingGames: '没有找到符合条件的免费游戏',
+		viewAllGames: '查看全部免费游戏',
 		startGame: '开始游戏',
 		publishedOn: '发布时间',
-		totalGames: '共 {count} 款免费游戏',
+		totalGames: '共 {count} 款优质免费游戏',
 		
 		// 首页SEO优化
 		welcomeTitle: 'FreeWebGames Store - 你的下一个游戏只需一键即可',
-		welcomeDescription: '发现数千款免费在线游戏，包括动作、益智、策略、冒险和休闲游戏。立即在浏览器中畅玩！',
-		latestGames: '最新游戏',
-		latestGamesDesc: '发现我们最新的免费游戏，最新添加到我们的收藏中',
-		popularGames: '热门游戏',
-		popularGamesDesc: '社区最受欢迎的游戏 - 快来加入游戏的乐趣！',
-		gameCategories: '游戏分类',
-		noDescription: '免费在线游戏体验',
-		gameHomepage: '游戏首页',
+		welcomeDescription: '发现数千款优质免费在线游戏，包括动作、益智、策略、冒险和休闲游戏。立即在浏览器中畅玩！',
+		latestGames: '最新免费游戏',
+		latestGamesDesc: '发现我们最新的优质免费游戏，最新添加到我们的收藏中',
+		popularGames: '热门免费游戏',
+		popularGamesDesc: '社区最受欢迎的免费游戏 - 快来加入游戏的乐趣！',
+		gameCategories: '免费游戏分类',
+		noDescription: '优质免费在线游戏体验',
+		gameHomepage: '免费游戏首页',
 		views: '次浏览',
 		viewsCount: '{count} 次浏览',
 		

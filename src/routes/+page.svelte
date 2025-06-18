@@ -118,23 +118,23 @@
 		href: `/?category=${categoryId}`
 	}));
 	
-	// SEO优化：生成页面标题和描述 - 英文优先
+	// SEO优化：生成页面标题和描述 - 英文优先 with freewebgames
 	$: pageTitle = selectedCategory 
-		? `${getCategoryDisplayName(selectedCategory)} - FreeWebGames Store` 
+		? `${getCategoryDisplayName(selectedCategory)} - FreeWebGames Store | Best Free Online Games` 
 		: 'FreeWebGames Store - Your Next Game Is Just One Click Away | Free Online Games';
 	
 	$: pageDescription = selectedCategory
-		? `Browse ${getCategoryDisplayName(selectedCategory)} games - ${filteredGames.length} free games for the best gaming experience`
-		: 'Your Next Game Is Just One Click Away. Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games.';
+		? `Browse ${getCategoryDisplayName(selectedCategory)} games - ${filteredGames.length} free games for the best freewebgames gaming experience at FreeWebGames Store`
+		: 'Your Next Game Is Just One Click Away. Discover thousands of freewebgames including action, puzzle, strategy, adventure, and casual games. Premium free online gaming experience.';
 
-	// 增强SEO信息 - 首页
+	// 增强SEO信息 - 首页 with freewebgames keyword
 	$: metaKeywords = selectedCategory 
-		? `${getCategoryDisplayName(selectedCategory)},${getCategoryDisplayName(selectedCategory)} games,free ${getCategoryDisplayName(selectedCategory).toLowerCase()} games,online ${getCategoryDisplayName(selectedCategory).toLowerCase()} games,browser games,HTML5 games`
-		: 'free web games,online games,browser games,HTML5 games,flash games,action games,puzzle games,strategy games,adventure games,casual games';
+		? `freewebgames,${getCategoryDisplayName(selectedCategory)},${getCategoryDisplayName(selectedCategory)} games,free ${getCategoryDisplayName(selectedCategory).toLowerCase()} games,online ${getCategoryDisplayName(selectedCategory).toLowerCase()} games,browser games,HTML5 games,free web games`
+		: 'freewebgames,free web games,online games,browser games,HTML5 games,flash games,action games,puzzle games,strategy games,adventure games,casual games,free online gaming';
 		
 	$: categoryDescription = selectedCategory
-		? `Play the best free ${getCategoryDisplayName(selectedCategory).toLowerCase()} games online at FreeWebGames Store. No downloads, no registration required - just click and play ${filteredGames.length} amazing ${getCategoryDisplayName(selectedCategory).toLowerCase()} games directly in your browser.`
-		: 'Your Next Game Is Just One Click Away. Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games without registration or download.';
+		? `Play the best free ${getCategoryDisplayName(selectedCategory).toLowerCase()} games online at FreeWebGames Store. No downloads, no registration required - just click and play ${filteredGames.length} amazing ${getCategoryDisplayName(selectedCategory).toLowerCase()} games. Experience premium freewebgames directly in your browser.`
+		: 'Your Next Game Is Just One Click Away. Discover thousands of freewebgames including action, puzzle, strategy, adventure, and casual games without registration or download. Premium free online gaming experience.';
 
 	// 生成结构化数据 - 修复验证错误
 	$: structuredData = selectedCategory && filteredGames && filteredGames.length > 0 ? {
@@ -334,13 +334,13 @@
 	<meta name="description" content={pageDescription} />
 	<meta name="keywords" content={metaKeywords} />
 	
-	<!-- Open Graph - 增强社交媒体分享 -->
+	<!-- Open Graph - 增强社交媒体分享 with freewebgames -->
 	<meta property="og:title" content={pageTitle} />
 	<meta property="og:description" content={pageDescription} />
 	<meta property="og:url" content={selectedCategory ? `https://freegamestoplayonline.store/?category=${selectedCategory}` : 'https://freegamestoplayonline.store'} />
 	<meta property="og:image" content="https://freegamestoplayonline.store/og-image.jpg" />
 	<meta property="og:type" content="website" />
-	<meta property="og:site_name" content="FreeWebGames Store" />
+	<meta property="og:site_name" content="FreeWebGames Store - Premium FreeWebGames Experience" />
 	
 	<!-- Twitter Card - 优化推特分享 -->
 	<meta name="twitter:card" content="summary_large_image" />
@@ -368,7 +368,7 @@
 	<header class="page-header">
 		<div class="header-content">
 			<h1>{lang === 'en' ? 'FreeWebGames Store - Your Next Game Is Just One Click Away' : 'FreeWebGames Store - 你的下一个游戏只需一键即可'}</h1>
-			<p>{lang === 'en' ? 'Discover thousands of free online games including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser!' : '发现数千款免费在线游戏，包括动作、益智、策略、冒险和休闲游戏。立即在浏览器中畅玩！'}</p>
+			<p>{lang === 'en' ? 'Discover thousands of freewebgames including action, puzzle, strategy, adventure, and casual games. Play instantly in your browser with premium free online gaming experience!' : '发现数千款免费在线游戏，包括动作、益智、策略、冒险和休闲游戏。立即在浏览器中畅玩！'}</p>
 		</div>
 		
 		<!-- Decorative gaming elements -->
@@ -471,15 +471,15 @@
 					<p>{t('loading', lang)}</p>
 				</div>
 			{:else}
-				<!-- 首页SEO介绍部分 -->
+				<!-- 首页SEO介绍部分 with freewebgames -->
 				<section class="home-intro">
 					<div class="intro-content">
-						<h2>{lang === 'en' ? 'Free Online Games Collection' : '免费在线游戏合集'}</h2>
+						<h2>{lang === 'en' ? 'Premium FreeWebGames Collection' : '优质免费在线游戏合集'}</h2>
 						<p>
 							{#if lang === 'en'}
-							 Welcome to <strong>FreeWebGames Store</strong>, your destination for the best free online games! We offer a diverse collection of games across multiple categories including action, puzzle, strategy, adventure, and more. All our games are playable directly in your browser with no downloads or registration required.
+							 Welcome to <strong>FreeWebGames Store</strong>, your ultimate destination for the best freewebgames experience! We offer a diverse collection of premium free online games across multiple categories including action, puzzle, strategy, adventure, and more. All our freewebgames are playable directly in your browser with no downloads or registration required.
 							{:else}
-							 欢迎来到<strong>FreeWebGames Store</strong>，这里是您畅玩最佳免费在线游戏的目的地！我们提供多种类别的游戏，包括动作、益智、策略、冒险等。所有游戏都可以直接在浏览器中玩，无需下载或注册。
+							 欢迎来到<strong>FreeWebGames Store</strong>，这里是您畅玩最佳免费在线游戏的终极目的地！我们提供多种类别的优质免费游戏，包括动作、益智、策略、冒险等。所有游戏都可以直接在浏览器中玩，无需下载或注册。
 							{/if}
 						</p>
 					</div>
@@ -531,22 +531,22 @@
 					{/if}
 				</section>
 
-				<!-- 首页底部SEO部分 -->
+				<!-- 首页底部SEO部分 with freewebgames -->
 				<section class="home-footer-seo">
-					<h2>{lang === 'en' ? 'Play Free Online Games at FreeWebGames Store' : '在FreeWebGames Store上畅玩免费在线游戏'}</h2>
+					<h2>{lang === 'en' ? 'Play Premium FreeWebGames at FreeWebGames Store' : '在FreeWebGames Store上畅玩优质免费在线游戏'}</h2>
 					<p>
 						{#if lang === 'en'}
-						 At FreeWebGames Store, we're dedicated to bringing you the best free online gaming experience. Our growing collection features games for all preferences, from fast-paced action to mind-bending puzzles, strategic challenges, and relaxing casual games. Explore our categories to find your next favorite game, all free to play in your browser with no registration required.
+						 At FreeWebGames Store, we're dedicated to bringing you the best freewebgames experience. Our growing collection features premium free online games for all preferences, from fast-paced action to mind-bending puzzles, strategic challenges, and relaxing casual games. Explore our freewebgames categories to find your next favorite game, all free to play in your browser with no registration required.
 						{:else}
-						 在FreeWebGames Store，我们致力于为您带来最佳的免费在线游戏体验。我们不断增长的游戏合集包含适合各种喜好的游戏，从节奏快的动作游戏到烧脑的益智游戏，从战略挑战到轻松休闲游戏。浏览我们的游戏分类，找到您的下一个最爱，所有游戏都可以在浏览器中免费玩，无需注册。
+						 在FreeWebGames Store，我们致力于为您带来最佳的免费在线游戏体验。我们不断增长的游戏合集包含适合各种喜好的优质游戏，从节奏快的动作游戏到烧脑的益智游戏，从战略挑战到轻松休闲游戏。浏览我们的游戏分类，找到您的下一个最爱，所有游戏都可以在浏览器中免费玩，无需注册。
 						{/if}
 					</p>
 					<div class="category-links">
-						<h3>{lang === 'en' ? 'Popular Game Categories' : '热门游戏分类'}</h3>
+						<h3>{lang === 'en' ? 'Popular FreeWebGames Categories' : '热门免费游戏分类'}</h3>
 						<div class="popular-categories">
 							{#each categoryNavItems.slice(0, 6) as category}
 								<a href={category.href} class="category-link">
-									{category.name} {lang === 'en' ? 'Games' : '游戏'}
+									{category.name} {lang === 'en' ? 'FreeWebGames' : '免费游戏'}
 								</a>
 							{/each}
 						</div>

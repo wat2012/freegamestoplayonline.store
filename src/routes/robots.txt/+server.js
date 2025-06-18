@@ -3,6 +3,7 @@ export async function GET() {
 Allow: /
 Allow: /games/*
 Allow: /?category=*
+Allow: /freewebgames
 
 # 禁止访问管理和私人区域
 Disallow: /api/*
@@ -13,10 +14,10 @@ Disallow: /*.xml$
 Disallow: /static/
 Disallow: /_app/
 
-# 站点地图
+# 站点地图 - FreeWebGames Store
 Sitemap: https://freegamestoplayonline.store/sitemap.xml
 
-# 针对特定搜索引擎的优化
+# 针对特定搜索引擎的优化 - freewebgames
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
